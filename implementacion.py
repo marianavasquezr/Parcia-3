@@ -36,8 +36,8 @@ while True:
             print(f"El archivo con la conversion de DICOM NIFT se guardó correctamente en: {nift}")
             pac[clave] = info
             print("-" * 100)
-            dicom = paciente.cargar_dicom(ruta_dicom)
-            archivos[clave] = dicom
+            #dicom = paciente.cargar_dicom(ruta_dicom)
+            #archivos[clave] = dicom
         else:
             print("------------------------------------------------------")
             print("La ruta del archivo no es válida. Inténtelo de nuevo.")
