@@ -39,7 +39,62 @@ class DicomFile:
                         pacientes.append(paciente)
 
         return pacientes
-    
+        
+    def convertir_a_nifti(self):
+        try:
+            dicom_data = pydicom.dcmread(self.ruta_dicom)
+            imagen_nifti = nib.Nifti1Image(dicom_data.pixel_array, dicom_data.get_affine())
+            return imagen_nifti
+        except Exception as e:
+            print(f"Error al convertir DICOM a NIfTI {self.ruta_dicom}: {e}")
+            return None
+        
+    def convert_directory(carpeta_entrada, carpeta_salida):
+        try:
+            os.makedirs(carpeta_salida, exist_ok=True)
+            for root, _, files in os.walk(carpeta_entrada):
+                for file in files:
+                    if file.endswith('.dcm'):
+                        input_path = os.path.join(root, file)
+                        output_path = os.path.join(carpeta_salida, file.replace('.dcm', '.nii.gz'))
+                        dicom_file = DicomFile(input_path)
+                        if dicom_file.imagen_nifti:
+                            nib.save(dicom_file.imagen_nifti, output_path)
+        except Exception as e:
+            print(f"Error al convertir directorio DICOM a NIfTI: {e}")
+        
+    def imagenDicom_con_rotacion(ruta_entrada, ruta_salida, angulo_rotacion):
+        if not os.path.exists(ruta_salida):
+            os.makedirs(ruta_salida)
+        # Lista los archivos DICOM en la carpeta de entrada
+        for archivo in os.listdir(ruta_entrada):
+            if archivo.endswith('.dcm'):
+                archivo_entrada = os.path.join(ruta_entrada, archivo)
+                archivo_salida = os.path.join(ruta_salida, archivo)
+                print("Procesando archivo DICOM:", archivo_entrada)
+                print("Guardando imagen rotada en:", archivo_salida)
+                dicom = pydicom.dcmread(archivo_entrada)
+                imagen_array = dicom.pixel_array
+            
+                # Calcular el centro de la imagen
+                rows, cols = imagen_array.shape
+                center = (cols / 2, rows / 2)
+                
+                # Calcular la matriz de rotación
+                matriz_rotacion = cv2.getRotationMatrix2D(center, angulo_rotacion, 1)
+                
+                # Aplicar la transformación de rotación a la imagen
+                imagenRotada = cv2.warpAffine(imagen_array, matriz_rotacion, (cols, rows))
+                
+                try:
+                    dicom.PixelData = imagenRotada.tobytes()
+                    dicom.save_as(archivo_salida)
+                    print("Imagen rotada guardada correctamente como:", archivo_salida)
+                except Exception as e:
+                    print("Error al guardar la imagen rotada:", str(e))
+
+
+
 class ImagenFile:
     def __init__(self, ruta):
         self.ruta = ruta

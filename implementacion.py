@@ -24,14 +24,10 @@ while True:
 
         # Extraer información de los pacientes
         pacientes = DicomFile.extraer_info_pacientes(carpeta_dicom)
-
-        # Mostrar información de los pacientes
-        for idx, paciente in enumerate(pacientes, start=1):
-            print(f"Paciente {idx}:")
-            print(f"Nombre: {paciente['Nombre']}")
-            print(f"Edad: {paciente['Edad']}")
-            print(f"ID: {paciente['ID']}")
-            print("-" * 30)
+        print(f"Nombre: {pacientes[0]['Nombre']}")
+        print(f"Edad: {pacientes[0]['Edad']}")
+        print(f"ID: {pacientes[0]['ID']}")
+        print("-" * 30)
         
     elif opcion == "2":
         # Implementa la opción para ingresar imágenes JPG o PNG
@@ -50,7 +46,14 @@ while True:
         
     elif opcion == "3":
         # Implementa la opción para realizar la transformación de rotación
-        pass
+        # Implementa la opción para realizar la transformación de rotación
+        ruta_entrada = input("Por favor, ingresa la ruta de la carpeta que contiene los archivos DICOM de entrada: ")
+        ruta_salida = input("Por favor, ingresa la ruta de la carpeta donde deseas guardar las imágenes rotadas: ")
+        angulo_rotacion = int(input("Por favor, ingresa el ángulo de rotación (90, 180 o 270 grados): "))
+        if angulo_rotacion in [90, 180, 270]:
+             DicomFile.imagenDicom_con_rotacion(ruta_entrada, ruta_salida, angulo_rotacion)
+        else:
+            print("Ángulo de rotación no válido. Debe ser 90, 180 o 270 grados.")
 
     
     elif opcion == "4":
