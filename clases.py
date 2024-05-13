@@ -11,14 +11,16 @@ class DicomFile:
         self.edad = edad
         self.ID = ID
         self.imagen = imagen_nifti
+        self.clave = 1
         
-    def extraer_info_paciente_dicom(ruta_dicom):
+    def extraer_info_paciente_dicom(self, ruta_dicom):
         try:
             dicom_data = pydicom.dcmread(ruta_dicom)
             nombre = dicom_data.PatientName
             edad = dicom_data.PatientAge
             ID = dicom_data.PatientID
             return {"Nombre": nombre, "Edad": edad, "ID": ID}
+        
         
         except Exception as e:
             print("-----------------------------------------------------")
@@ -46,7 +48,9 @@ class DicomFile:
             imagen_nifti = nib.Nifti1Image(dicom_data.pixel_array, dicom_data.get_affine())
             return imagen_nifti
         except Exception as e:
+            print("--------------------------------------------------------")
             print(f"Error al convertir DICOM a NIfTI {self.ruta_dicom}: {e}")
+            print("--------------------------------------------------------")
             return None
         
     def convert_directory(carpeta_entrada, carpeta_salida):
@@ -61,7 +65,9 @@ class DicomFile:
                         if dicom_file.imagen_nifti:
                             nib.save(dicom_file.imagen_nifti, output_path)
         except Exception as e:
+            print("-------------------------------------------------")
             print(f"Error al convertir directorio DICOM a NIfTI: {e}")
+            print("-------------------------------------------------")
         
     def imagenDicom_con_rotacion(ruta_entrada, ruta_salida, angulo_rotacion):
         if not os.path.exists(ruta_salida):
@@ -71,6 +77,7 @@ class DicomFile:
             if archivo.endswith('.dcm'):
                 archivo_entrada = os.path.join(ruta_entrada, archivo)
                 archivo_salida = os.path.join(ruta_salida, archivo)
+                print("------------------------------------------")
                 print("Procesando archivo DICOM:", archivo_entrada)
                 print("Guardando imagen rotada en:", archivo_salida)
                 dicom = pydicom.dcmread(archivo_entrada)
@@ -89,10 +96,12 @@ class DicomFile:
                 try:
                     dicom.PixelData = imagenRotada.tobytes()
                     dicom.save_as(archivo_salida)
+                    print("----------------------------------------------------------")
                     print("Imagen rotada guardada correctamente como:", archivo_salida)
                 except Exception as e:
+                    print("------------------------------------------")
                     print("Error al guardar la imagen rotada:", str(e))
-
+                    print("------------------------------------------")
 
 
 class ImagenFile:
@@ -117,10 +126,10 @@ class ImagenFile:
 
         # Aplicar transformación morfológica
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (tamano_kernel, tamano_kernel))
-        imagen_morfologica = cv2.morphologyEx(imagen_binarizada, cv2.MORPH_CLOSE, kernel)
+        imaEro = cv2.erode(imagen_binarizada,kernel,iterations = 1)
 
         # Añadir texto a la imagen
-        texto = f"Imagen binarizada (umbral: {umbral}, tamaño de kernel: {tamano_kernel})"
-        cv2.putText(imagen_morfologica, texto, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        texto = f"Imagen binarizada (umbral: {umbral}, tamano de kernel: {tamano_kernel})"
+        cv2.putText(imaEro, texto,  (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
-        return imagen_morfologica
+        return imaEro

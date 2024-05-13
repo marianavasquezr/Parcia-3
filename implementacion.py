@@ -7,6 +7,7 @@ import numpy as np
 import nibabel as nib
 pac = {}
 archivos = {}
+clave = 0
 
 while True:
     print("\n----------------Menú Principal:--------------------")
@@ -33,11 +34,12 @@ while True:
         # Implementa la opción para ingresar imágenes JPG o PNG
         ruta_imagen = input("Ingrese la ruta de la imagen (JPG/PNG): ")
         if os.path.exists(ruta_imagen):
-            archivos[ruta_imagen] = ImagenFile(ruta_imagen)
+            clave += 1
+            archivos[clave] = ImagenFile(ruta_imagen)
             print("---------------------------")
             print("Imagen ingresada con éxito.")
             print("---------------------------")
-        
+            print(archivos)
             
         else:
                 print("------------------------------------------------------")
@@ -53,9 +55,10 @@ while True:
         if angulo_rotacion in [90, 180, 270]:
              DicomFile.imagenDicom_con_rotacion(ruta_entrada, ruta_salida, angulo_rotacion)
         else:
+            print("------------------------------------------------------------")
             print("Ángulo de rotación no válido. Debe ser 90, 180 o 270 grados.")
+            print("------------------------------------------------------------")
 
-    
     elif opcion == "4":
         # Implementa la opción para realizar binarización y transformación morfológica
         ruta_imagen = input("Ingrese la ruta de la imagen (JPG o PNG): ")
@@ -69,7 +72,7 @@ while True:
         imagen_procesada = imagen.binarizacion_morfologia(umbral, tamano_kernel)
 
         # Guardar la imagen procesada
-        ruta_guardado = "Imagenesp.jpg"
+        ruta_guardado = input("Ingrese la ruta de destino para guardar la imagen procesada: ")
         imagen.guardar_imagen(imagen_procesada, ruta_guardado)
         print("---------------------------------------------------------")
         print("Imagen procesada guardada exitosamente en:", ruta_guardado)
