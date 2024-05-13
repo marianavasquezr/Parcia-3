@@ -26,15 +26,15 @@ while True:
         if os.path.exists(ruta_dicom):
             clave += 1
             paciente = DicomFile()
+            nift = paciente.convert_directory(ruta_dicom,ruta_nifti)
             info = paciente.extraer_info_pacientes(ruta_dicom,ruta_nifti)
             # Extraer información de los pacientes
             print(f"Nombre: {info[0]['Nombre']}")
             print(f"Edad: {info[0]['Edad']}")
             print(f"ID: {info[0]['ID']}")
-            print(f"Ruta archivos NIFTI: {info[0]['RutaNifti']}")
-            print("-" * 30)
+            print(f"El archivo con la conversion de DICOM NIFT se guardó correctamente en: {nift}")
             pac[clave] = info
-            print(pac)
+            print("-" * 100)
         
     elif opcion == "2":
         # Implementa la opción para ingresar imágenes JPG o PNG
@@ -59,7 +59,7 @@ while True:
         ruta_salida = input("Por favor, ingresa la ruta de la carpeta donde deseas guardar las imágenes rotadas: ")
         angulo_rotacion = int(input("Por favor, ingresa el ángulo de rotación (90, 180 o 270 grados): "))
         if angulo_rotacion in [90, 180, 270]:
-             DicomFile.imagenDicom_con_rotacion(ruta_entrada, ruta_salida, angulo_rotacion)
+            DicomFile.imagenDicom_con_rotacion(ruta_entrada, ruta_salida, angulo_rotacion)
         else:
             print("------------------------------------------------------------")
             print("Ángulo de rotación no válido. Debe ser 90, 180 o 270 grados.")

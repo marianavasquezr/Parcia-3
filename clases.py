@@ -14,14 +14,14 @@ class DicomFile:
         self.ruta_imagenNift = ""
         self.clave = 1
         
-    def extraer_info_paciente_dicom(self, ruta_dicom, carpeta_nifti):
+    def extraer_info_paciente_dicom(self, ruta_dicom):
         try:
             dicom_data = pydicom.dcmread(ruta_dicom)
             self.nombre = dicom_data.PatientName
             self.edad = dicom_data.PatientAge
             self.ID = dicom_data.PatientID
-            self.ruta_imagenNift = self.convert_directory(ruta_dicom, carpeta_nifti)
-            return {"Nombre": self.nombre, "Edad": self.edad, "ID": self.ID, "RutaNifti": self.ruta_imagenNift }
+            #self.ruta_imagenNift = self.convert_directory(carpeta_dicom, carpeta_nifti)
+            return {"Nombre": self.nombre, "Edad": self.edad, "ID": self.ID }
 
 
         except Exception as e:
@@ -40,15 +40,16 @@ class DicomFile:
             print(f"Error al convertir directorio DICOM a NIfTI: {e}")
 
 
-    def extraer_info_pacientes(self, carpeta_dicom, carpeta_nifti):
+    def extraer_info_pacientes(self, carpeta_dicom):
         pacientes = []
 
         # Iterar sobre todos los archivos en la carpeta DICOM
+        #raiz representa la ruta del directorio actual, _ es una lista de subdirectorios (que no necesitamos en este caso), y archivos es una lista de archivos en el directorio actual.
         for raiz, _, archivos in os.walk(carpeta_dicom):
             for archivo in archivos:
                 if archivo.endswith('.dcm'):
                     ruta_dicom = os.path.join(raiz, archivo)
-                    paciente = self.extraer_info_paciente_dicom(ruta_dicom,carpeta_nifti)
+                    paciente = self.extraer_info_paciente_dicom(ruta_dicom)
                     if paciente:
                         pacientes.append(paciente)
 
@@ -65,21 +66,7 @@ class DicomFile:
             print("--------------------------------------------------------")
             return None
         
-    def convert_directory(self, carpeta_entrada, carpeta_salida):
-        try:
-            os.makedirs(carpeta_salida, exist_ok=True)
-            for root, _, files in os.walk(carpeta_entrada):
-                for file in files:
-                    if file.endswith('.dcm'):
-                        input_path = os.path.join(root, file)
-                        output_path = os.path.join(carpeta_salida, file.replace('.dcm', '.nii.gz'))
-                        dicom_file = DicomFile(input_path)
-                        if dicom_file.imagen_nifti:
-                            nib.save(dicom_file.imagen_nifti, output_path)
-        except Exception as e:
-            print("-------------------------------------------------")
-            print(f"Error al convertir directorio DICOM a NIfTI: {e}")
-            print("-------------------------------------------------")
+
         
     def imagenDicom_con_rotacion(self, ruta_entrada, ruta_salida, angulo_rotacion):
         if not os.path.exists(ruta_salida):
