@@ -21,7 +21,9 @@ class DicomFile:
             return {"Nombre": nombre, "Edad": edad, "ID": ID}
         
         except Exception as e:
+            print("-----------------------------------------------------")
             print(f"Error al procesar el archivo DICOM {ruta_dicom}: {e}")
+            print("-----------------------------------------------------")
             return None
 
     def extraer_info_pacientes(carpeta_dicom):
@@ -37,7 +39,7 @@ class DicomFile:
                         pacientes.append(paciente)
 
         return pacientes
-
+    
 class ImagenFile:
     def __init__(self, ruta):
         self.ruta = ruta
@@ -50,4 +52,20 @@ class ImagenFile:
         cv2.imwrite(ruta_destino, imagen)
 
     def binarizacion_morfologia(self, umbral, tamano_kernel):
-        pass
+        imagen = self.cargar_imagen()
+
+        # Convertir a escala de grises
+        imagen_gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+
+        # Aplicar binarización
+        _, imagen_binarizada = cv2.threshold(imagen_gris, umbral, 255, cv2.THRESH_BINARY)
+
+        # Aplicar transformación morfológica
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (tamano_kernel, tamano_kernel))
+        imagen_morfologica = cv2.morphologyEx(imagen_binarizada, cv2.MORPH_CLOSE, kernel)
+
+        # Añadir texto a la imagen
+        texto = f"Imagen binarizada (umbral: {umbral}, tamaño de kernel: {tamano_kernel})"
+        cv2.putText(imagen_morfologica, texto, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+        return imagen_morfologica

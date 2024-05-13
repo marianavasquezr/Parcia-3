@@ -5,7 +5,7 @@ import pydicom
 import os
 import numpy as np 
 import nibabel as nib
-pacientes = {}
+pac = {}
 archivos = {}
 
 while True:
@@ -41,6 +41,7 @@ while True:
             print("---------------------------")
             print("Imagen ingresada con éxito.")
             print("---------------------------")
+        
             
         else:
                 print("------------------------------------------------------")
@@ -54,7 +55,22 @@ while True:
     
     elif opcion == "4":
         # Implementa la opción para realizar binarización y transformación morfológica
-        pass
+        ruta_imagen = input("Ingrese la ruta de la imagen (JPG o PNG): ")
+        imagen = ImagenFile(ruta_imagen)
+
+        # Solicitar al usuario el umbral y el tamaño del kernel
+        umbral = int(input("Ingrese el umbral para la binarización (0-255): "))
+        tamano_kernel = int(input("Ingrese el tamaño del kernel para la morfología: "))
+
+        # Aplicar binarización y transformación morfológica
+        imagen_procesada = imagen.binarizacion_morfologia(umbral, tamano_kernel)
+
+        # Guardar la imagen procesada
+        ruta_guardado = "Imagenesp.jpg"
+        imagen.guardar_imagen(imagen_procesada, ruta_guardado)
+        print("---------------------------------------------------------")
+        print("Imagen procesada guardada exitosamente en:", ruta_guardado)
+        print("---------------------------------------------------------")
         
     elif opcion == "5":
             print("-----------")
