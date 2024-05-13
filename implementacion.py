@@ -22,14 +22,16 @@ while True:
         # Implementa la opción para ingresar pacientes con archivos DICOM
         # Ruta de la carpeta que contiene los archivos DICOM
         ruta_dicom = input("Ingrese la ruta de la carpeta de archivos dicom: ")
+        ruta_nifti = input("Ingrese la ruta de la carpeta donde desea guardar los archivos NIfTI: ")
         if os.path.exists(ruta_dicom):
             clave += 1
             paciente = DicomFile()
-            info = paciente.extraer_info_pacientes(ruta_dicom)
+            info = paciente.extraer_info_pacientes(ruta_dicom,ruta_nifti)
             # Extraer información de los pacientes
             print(f"Nombre: {info[0]['Nombre']}")
             print(f"Edad: {info[0]['Edad']}")
             print(f"ID: {info[0]['ID']}")
+            print(f"Ruta archivos NIFTI: {info[0]['RutaNifti']}")
             print("-" * 30)
             pac[clave] = info
             print(pac)

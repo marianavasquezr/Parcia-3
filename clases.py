@@ -11,17 +11,18 @@ class DicomFile:
         self.nombre = ""
         self.edad = 0
         self.ID = 0
-        #self.ruta_imagenNift = ruta_imagenNift
+        self.ruta_imagenNift = ""
         self.clave = 1
         
-    def extraer_info_paciente_dicom(self, ruta_dicom):
+    def extraer_info_paciente_dicom(self, ruta_dicom, carpeta_nifti):
         try:
             dicom_data = pydicom.dcmread(ruta_dicom)
             self.nombre = dicom_data.PatientName
             self.edad = dicom_data.PatientAge
             self.ID = dicom_data.PatientID
-            return {"Nombre": self.nombre, "Edad": self.edad, "ID": self.ID}
-        
+            self.ruta_imagenNift = self.convert_directory(ruta_dicom, carpeta_nifti)
+            return {"Nombre": self.nombre, "Edad": self.edad, "ID": self.ID, "RutaNifti": self.ruta_imagenNift }
+
 
         except Exception as e:
             print("-----------------------------------------------------")
@@ -29,17 +30,17 @@ class DicomFile:
             print("-----------------------------------------------------")
             return None
         
-    def convert_directory(self,ruta_dicom, ruta_nifti):
+    def convert_directory(self,ruta_dicom, carpeta_nifti):
         try:
-            os.makedirs(ruta_nifti, exist_ok=True)
-            dicom2nifti.convert_directory(ruta_dicom,ruta_nifti)
-            ruta_carpetaNifti = os.path.abspath(ruta_nifti)
+            os.makedirs(carpeta_nifti, exist_ok=True)
+            dicom2nifti.convert_directory(ruta_dicom,carpeta_nifti)
+            ruta_carpetaNifti = os.path.abspath(carpeta_nifti)
             return ruta_carpetaNifti
         except Exception as e:
             print(f"Error al convertir directorio DICOM a NIfTI: {e}")
 
 
-    def extraer_info_pacientes(self, carpeta_dicom):
+    def extraer_info_pacientes(self, carpeta_dicom, carpeta_nifti):
         pacientes = []
 
         # Iterar sobre todos los archivos en la carpeta DICOM
@@ -47,7 +48,7 @@ class DicomFile:
             for archivo in archivos:
                 if archivo.endswith('.dcm'):
                     ruta_dicom = os.path.join(raiz, archivo)
-                    paciente = self.extraer_info_paciente_dicom(ruta_dicom)
+                    paciente = self.extraer_info_paciente_dicom(ruta_dicom,carpeta_nifti)
                     if paciente:
                         pacientes.append(paciente)
 
