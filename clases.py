@@ -4,6 +4,7 @@ import pydicom
 import os
 import numpy as np 
 import nibabel as nib
+import dicom2nifti
 
 class DicomFile:
     def __init__(self):
@@ -21,12 +22,22 @@ class DicomFile:
             self.ID = dicom_data.PatientID
             return {"Nombre": self.nombre, "Edad": self.edad, "ID": self.ID}
         
-        
+
         except Exception as e:
             print("-----------------------------------------------------")
             print(f"Error al procesar el archivo DICOM {ruta_dicom}: {e}")
             print("-----------------------------------------------------")
             return None
+        
+    def convert_directory(self,ruta_dicom, ruta_nifti):
+        try:
+            os.makedirs(ruta_nifti, exist_ok=True)
+            dicom2nifti.convert_directory(ruta_dicom,ruta_nifti)
+            ruta_carpetaNifti = os.path.abspath(ruta_nifti)
+            return ruta_carpetaNifti
+        except Exception as e:
+            print(f"Error al convertir directorio DICOM a NIfTI: {e}")
+
 
     def extraer_info_pacientes(self, carpeta_dicom):
         pacientes = []
