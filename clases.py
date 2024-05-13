@@ -6,20 +6,20 @@ import numpy as np
 import nibabel as nib
 
 class DicomFile:
-    def __init__(self, nombre, edad, ID, imagen_nifti):
-        self.nombre = nombre
-        self.edad = edad
-        self.ID = ID
-        self.imagen = imagen_nifti
+    def __init__(self):
+        self.nombre = ""
+        self.edad = 0
+        self.ID = 0
+        #self.ruta_imagenNift = ruta_imagenNift
         self.clave = 1
         
     def extraer_info_paciente_dicom(self, ruta_dicom):
         try:
             dicom_data = pydicom.dcmread(ruta_dicom)
-            nombre = dicom_data.PatientName
-            edad = dicom_data.PatientAge
-            ID = dicom_data.PatientID
-            return {"Nombre": nombre, "Edad": edad, "ID": ID}
+            self.nombre = dicom_data.PatientName
+            self.edad = dicom_data.PatientAge
+            self.ID = dicom_data.PatientID
+            return {"Nombre": self.nombre, "Edad": self.edad, "ID": self.ID}
         
         
         except Exception as e:
@@ -28,7 +28,7 @@ class DicomFile:
             print("-----------------------------------------------------")
             return None
 
-    def extraer_info_pacientes(carpeta_dicom):
+    def extraer_info_pacientes(self, carpeta_dicom):
         pacientes = []
 
         # Iterar sobre todos los archivos en la carpeta DICOM
@@ -36,7 +36,7 @@ class DicomFile:
             for archivo in archivos:
                 if archivo.endswith('.dcm'):
                     ruta_dicom = os.path.join(raiz, archivo)
-                    paciente = DicomFile.extraer_info_paciente_dicom(ruta_dicom)
+                    paciente = self.extraer_info_paciente_dicom(ruta_dicom)
                     if paciente:
                         pacientes.append(paciente)
 
@@ -53,7 +53,7 @@ class DicomFile:
             print("--------------------------------------------------------")
             return None
         
-    def convert_directory(carpeta_entrada, carpeta_salida):
+    def convert_directory(self, carpeta_entrada, carpeta_salida):
         try:
             os.makedirs(carpeta_salida, exist_ok=True)
             for root, _, files in os.walk(carpeta_entrada):
@@ -69,7 +69,7 @@ class DicomFile:
             print(f"Error al convertir directorio DICOM a NIfTI: {e}")
             print("-------------------------------------------------")
         
-    def imagenDicom_con_rotacion(ruta_entrada, ruta_salida, angulo_rotacion):
+    def imagenDicom_con_rotacion(self, ruta_entrada, ruta_salida, angulo_rotacion):
         if not os.path.exists(ruta_salida):
             os.makedirs(ruta_salida)
         # Lista los archivos DICOM en la carpeta de entrada

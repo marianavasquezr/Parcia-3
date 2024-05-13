@@ -21,14 +21,18 @@ while True:
     if opcion == "1":
         # Implementa la opción para ingresar pacientes con archivos DICOM
         # Ruta de la carpeta que contiene los archivos DICOM
-        carpeta_dicom = input("Ingrese la ruta de la carpeta de archivos dicom: ")
-
-        # Extraer información de los pacientes
-        pacientes = DicomFile.extraer_info_pacientes(carpeta_dicom)
-        print(f"Nombre: {pacientes[0]['Nombre']}")
-        print(f"Edad: {pacientes[0]['Edad']}")
-        print(f"ID: {pacientes[0]['ID']}")
-        print("-" * 30)
+        ruta_dicom = input("Ingrese la ruta de la carpeta de archivos dicom: ")
+        if os.path.exists(ruta_dicom):
+            clave += 1
+            paciente = DicomFile()
+            info = paciente.extraer_info_pacientes(ruta_dicom)
+            # Extraer información de los pacientes
+            print(f"Nombre: {info[0]['Nombre']}")
+            print(f"Edad: {info[0]['Edad']}")
+            print(f"ID: {info[0]['ID']}")
+            print("-" * 30)
+            pac[clave] = info
+            print(pac)
         
     elif opcion == "2":
         # Implementa la opción para ingresar imágenes JPG o PNG
