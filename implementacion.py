@@ -43,9 +43,6 @@ while True:
             print("La ruta del archivo no es válida. Inténtelo de nuevo.")
             print("------------------------------------------------------")
 
-        
-        
-        
     elif opcion == "2":
         # Implementa la opción para ingresar imágenes JPG o PNG
         ruta_imagen = input("Ingrese la ruta de la imagen (JPG/PNG): ")
@@ -80,12 +77,10 @@ while True:
         ruta_imagen = input("Ingrese la ruta de la imagen (JPG o PNG): ")
         imagen = ImagenFile(ruta_imagen)
 
-        # Solicitar al usuario el umbral y el tamaño del kernel
-        umbral = int(input("Ingrese el umbral para la binarización (0-255): "))
-        tamano_kernel = int(input("Ingrese el tamaño del kernel para la morfología: "))
-
+        # Solicitar al usuario el umbral
+        umbral = int(input("Ingrese el umbral para la binarización (0-60): "))
         # Aplicar binarización y transformación morfológica
-        imagen_procesada = imagen.binarizacion_morfologia(umbral, tamano_kernel)
+        imagen_procesada = imagen.binarizacion_morfologia(umbral)
 
         # Guardar la imagen procesada
         ruta_guardado = input("Ingrese la ruta de destino para guardar la imagen procesada: ")

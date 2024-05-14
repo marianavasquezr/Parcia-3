@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt 
 import cv2 
 import pydicom 
 import os
@@ -125,7 +124,7 @@ class ImagenFile:
     def guardar_imagen(self, imagen, ruta_destino):
         cv2.imwrite(ruta_destino, imagen)
 
-    def binarizacion_morfologia(self, umbral, tamano_kernel):
+    def binarizacion_morfologia(self, umbral):
         imagen = self.cargar_imagen()
 
         # Convertir a escala de grises
@@ -135,11 +134,11 @@ class ImagenFile:
         _, imagen_binarizada = cv2.threshold(imagen_gris, umbral, 255, cv2.THRESH_BINARY)
 
         # Aplicar transformación morfológica
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (tamano_kernel, tamano_kernel))
+        kernel = np.ones((10,10),np.uint8)
         imaEro = cv2.erode(imagen_binarizada,kernel,iterations = 1)
 
         # Añadir texto a la imagen
-        texto = f"Imagen binarizada (umbral: {umbral}, tamano de kernel: {tamano_kernel})"
+        texto = f"Imagen binarizada (umbral: {umbral}, tamano de kernel: {len(kernel)})"
         cv2.putText(imaEro, texto,  (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
         return imaEro
