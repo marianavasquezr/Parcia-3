@@ -76,18 +76,10 @@ while True:
         # Implementa la opción para realizar binarización y transformación morfológica
         ruta_imagen = input("Ingrese la ruta de la imagen (JPG o PNG): ")
         imagen = ImagenFile(ruta_imagen)
-
-        # Solicitar al usuario el umbral
-        umbral = int(input("Ingrese el umbral para la binarización (0-60): "))
         # Aplicar binarización y transformación morfológica
-        imagen_procesada = imagen.binarizacion_morfologia(umbral)
+        imagen_procesada = imagen.binarizacion_morfologia()
 
-        # Guardar la imagen procesada
-        ruta_guardado = input("Ingrese la ruta de destino para guardar la imagen procesada: ")
-        imagen.guardar_imagen(imagen_procesada, ruta_guardado)
-        print("---------------------------------------------------------")
-        print("Imagen procesada guardada exitosamente en:", ruta_guardado)
-        print("---------------------------------------------------------")
+        # Guardar la imagen procesada-------------------------")
         
     elif opcion == "5":
             print("-----------")

@@ -124,21 +124,22 @@ class ImagenFile:
     def guardar_imagen(self, imagen, ruta_destino):
         cv2.imwrite(ruta_destino, imagen)
 
-    def binarizacion_morfologia(self, umbral):
+    def binarizacion_morfologia(self):
         imagen = self.cargar_imagen()
 
         # Convertir a escala de grises
         imagen_gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+        mid = np.mean(imagen_gris) #umbral
 
         # Aplicar binarización
-        _, imagen_binarizada = cv2.threshold(imagen_gris, umbral, 255, cv2.THRESH_BINARY)
+        _, imagen_binarizada = cv2.threshold(imagen_gris, mid, 255, cv2.THRESH_BINARY)
+        print(imagen_binarizada)
 
         # Aplicar transformación morfológica
-        kernel = np.ones((10,10),np.uint8)
+        kernel = np.ones((2,2),np.uint8)
         imaEro = cv2.erode(imagen_binarizada,kernel,iterations = 1)
 
         # Añadir texto a la imagen
-        texto = f"Imagen binarizada (umbral: {umbral}, tamano de kernel: {len(kernel)})"
-        cv2.putText(imaEro, texto,  (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
+        texto = f"Imagen binarizada (umbral: {mid}, tamano de kernel: {len(kernel)})"
+        cv2.putText(imaEro, texto,  (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,255), 2)
         return imaEro
